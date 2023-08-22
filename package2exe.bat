@@ -1,0 +1,1 @@
+pyinstaller -F -w ffmpeg2mp4.py
