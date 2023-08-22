@@ -13,51 +13,41 @@ class SearchUI() :
     def __init__(self, init_window) :
         self.init_window = init_window
         self.search_content = tk.StringVar(self.init_window, "")
+        self.optionCrf = (("CRF23", " -crf 23"), ("CRF20", " -crf 20"), ("CRF17", " -crf 17"))
+        self.optionResolution = (("4K(3840x2160)", " -vf scale=3840:2160"), ("2K(2560x1440)", " -vf scale=2560:1440"), ("1080P(1920x1080)", " -vf scale=1920:1080"))
 
     def clickEncoding(self) :
         for fullname in self.curPaths:
             print(fullname)
             ext = os.path.splitext(fullname)
-
+            suffix = ""
+            if self.Checkbutton_SuffixVar.get() == 1:
+                suffix = "_{}_{}".format(self.optionResolution[self.Radiobutton_ResolutionVar.get()][0], self.optionCrf[self.Radiobutton_CrfVar.get()][0])
             options = " -c:v libx264"
-            
-            if self.Radiobutton_ResolutionVar.get() == 1:
-                options = options + " -vf scale=3840:2160"
-            elif self.Radiobutton_ResolutionVar.get() == 2:
-                options = options + " -vf scale=2560:1440"
-            elif self.Radiobutton_ResolutionVar.get() == 3:
-                options = options + " -vf scale=1920:1080"
-
-            if self.Radiobutton_CrfVar.get() == 1:
-                options = options + " -crf 17"
-            elif self.Radiobutton_CrfVar.get() == 2:
-                options = options + " -crf 20"
-            elif self.Radiobutton_CrfVar.get() == 3:
-                options = options + " -crf 23"
-
+            options = options + self.optionResolution[self.Radiobutton_ResolutionVar.get()][1]
+            options = options + self.optionCrf[self.Radiobutton_CrfVar.get()][1]
             if self.Checkbutton_SlowVar.get() == 1:
                 options = options + " -preset veryslow"
-            
-            cmd = "ffmpeg -i {}{} {}.mp4".format(fullname, options, ext[0])
-            # print(cmd)
-            os.system(cmd)
+            cmd = "ffmpeg -i {}{} {}{}.mp4".format(fullname, options, ext[0], suffix)
+            print(cmd)
+            # os.system(cmd)
 
     def openFiles(self) :
-        self.curPaths = filedialog.askopenfilenames(filetypes=[("webm", ".webm")])
+        self.curPaths = filedialog.askopenfilenames()
         self.Entry_OpenPath.delete(0, tk.END)
         self.Entry_OpenPath.insert(0, self.curPaths)
 
-    def selectCover(self) :
-        print("selectCover ", self.Checkbutton_CoverVar.get())
+    def selectSuffix(self) :
+        print("selectSuffix ", self.Checkbutton_SuffixVar.get())
 
     def selectSlow(self) :
         print("selectSlow ", self.Checkbutton_SlowVar.get())
 
     def selectResolution(self) :
-        print("selectResolution ", self.Radiobutton_ResolutionVar.get())
+        print("selectResolution ", self.optionResolution[self.Radiobutton_ResolutionVar.get()])
 
     def selectCrf(self) :
-        print("selectCrf ", self.Radiobutton_CrfVar.get())
+        print("selectCrf ", self.optionCrf[self.Radiobutton_CrfVar.get()])
 
     def initWindow(self) :
 
@@ -77,32 +67,28 @@ class SearchUI() :
         currow = currow + 1
 
         self.Radiobutton_ResolutionVar = tk.IntVar()
-        self.Radiobutton_Resolution1 = tk.Radiobutton(self.FM1, text = "4K(3840x2160)", variable = self.Radiobutton_ResolutionVar, value = 1, command = self.selectResolution)
-        self.Radiobutton_Resolution1.grid(row = currow, column = 0, sticky = 'nw')
-        self.Radiobutton_Resolution2 = tk.Radiobutton(self.FM1, text = "2K(2560x1440)", variable = self.Radiobutton_ResolutionVar, value = 2, command = self.selectResolution)
-        self.Radiobutton_Resolution2.grid(row = currow, column = 1, sticky = 'nw')
-        self.Radiobutton_Resolution3 = tk.Radiobutton(self.FM1, text = "1080P(1920x1080)", variable = self.Radiobutton_ResolutionVar, value = 3, command = self.selectResolution)
-        self.Radiobutton_Resolution3.grid(row = currow, column = 2, sticky = 'nw')
+        for idx in range(len(self.optionResolution)):
+            itm = self.optionResolution[idx]
+            radio = tk.Radiobutton(self.FM1, text = itm[0], variable = self.Radiobutton_ResolutionVar, value = idx, command = self.selectResolution)
+            radio.grid(row = currow, column = idx, sticky = 'nw')
 
         currow = currow + 1
 
         self.Radiobutton_CrfVar = tk.IntVar()
-        self.Radiobutton_Crf1 = tk.Radiobutton(self.FM1, text = "CRF 17", variable = self.Radiobutton_CrfVar, value = 1, command = self.selectCrf)
-        self.Radiobutton_Crf1.grid(row = currow, column = 0, sticky = 'nw')
-        self.Radiobutton_Crf2 = tk.Radiobutton(self.FM1, text = "CRF 20", variable = self.Radiobutton_CrfVar, value = 2, command = self.selectCrf)
-        self.Radiobutton_Crf2.grid(row = currow, column = 1, sticky = 'nw')
-        self.Radiobutton_Crf3 = tk.Radiobutton(self.FM1, text = "CRF 23", variable = self.Radiobutton_CrfVar, value = 3, command = self.selectCrf)
-        self.Radiobutton_Crf3.grid(row = currow, column = 2, sticky = 'nw')
+        for idx in range(len(self.optionCrf)):
+            itm = self.optionCrf[idx]
+            radio = tk.Radiobutton(self.FM1, text = itm[0], variable = self.Radiobutton_CrfVar, value = idx, command = self.selectCrf)
+            radio.grid(row = currow, column = idx, sticky = 'nw')
 
         currow = currow + 1
 
-        self.Checkbutton_CoverVar = tk.IntVar()
-        self.Checkbutton_Cover = tk.Checkbutton(self.FM1, text = "保留原mp4文件", variable = self.Checkbutton_CoverVar, command = self.selectCover)
-        self.Checkbutton_Cover.grid(row = currow, column = 0, sticky = 'nw')
+        self.Checkbutton_SuffixVar = tk.IntVar()
+        checkBtn = tk.Checkbutton(self.FM1, text = "加后缀", variable = self.Checkbutton_SuffixVar, command = self.selectSuffix)
+        checkBtn.grid(row = currow, column = 0, sticky = 'nw')
 
         self.Checkbutton_SlowVar = tk.IntVar()
-        self.Checkbutton_Slow = tk.Checkbutton(self.FM1, text = "慢编码（高质量）", variable = self.Checkbutton_SlowVar, command = self.selectSlow)
-        self.Checkbutton_Slow.grid(row = currow, column = 1, sticky = 'nw')
+        checkBtn = tk.Checkbutton(self.FM1, text = "慢编码（高质量）", variable = self.Checkbutton_SlowVar, command = self.selectSlow)
+        checkBtn.grid(row = currow, column = 1, sticky = 'nw')
 
         currow = currow + 1
         
