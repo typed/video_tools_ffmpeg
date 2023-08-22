@@ -9,10 +9,9 @@ from tkinter import filedialog
 
 search_root = '../'
 
-class SearchUI() :
+class VideoUI() :
     def __init__(self, init_window) :
         self.init_window = init_window
-        self.search_content = tk.StringVar(self.init_window, "")
         self.optionCrf = (("CRF23", " -crf 23"), ("CRF20", " -crf 20"), ("CRF17", " -crf 17"))
         self.optionResolution = (("4K(3840x2160)", " -vf scale=3840:2160"), ("2K(2560x1440)", " -vf scale=2560:1440"), ("1080P(1920x1080)", " -vf scale=1920:1080"))
 
@@ -51,9 +50,15 @@ class SearchUI() :
 
     def initWindow(self) :
 
-        currow = 0
         self.init_window.title("ffmpeg转mp4")
-        self.init_window.geometry('600x500+10+10')
+        window_width = 600
+        window_height = 500
+        screenwidth = self.init_window.winfo_screenwidth()
+        screenheight = self.init_window.winfo_screenheight()
+        size = "%dx%d+%d+%d" % (window_width, window_height, (screenwidth - window_width)/2, (screenheight - window_height)/2)
+        self.init_window.geometry(size)
+
+        currow = 0
         
         self.FM1 = tk.Frame(self.init_window, borderwidth = 10)
         self.FM1.grid(row = currow, column = 0, sticky = 'nw')
@@ -97,6 +102,6 @@ class SearchUI() :
         
 
 init_window = tk.Tk()
-ui = SearchUI(init_window)
+ui = VideoUI(init_window)
 ui.initWindow()
 init_window.mainloop()
