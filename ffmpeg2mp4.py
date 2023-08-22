@@ -12,8 +12,8 @@ search_root = '../'
 class VideoUI() :
     def __init__(self, init_window) :
         self.init_window = init_window
-        self.optionCrf = (("CRF23", " -crf 23"), ("CRF20", " -crf 20"), ("CRF17", " -crf 17"))
-        self.optionResolution = (("4K(3840x2160)", " -vf scale=3840:2160"), ("2K(2560x1440)", " -vf scale=2560:1440"), ("1080P(1920x1080)", " -vf scale=1920:1080"))
+        self.optionCrf = (("CRF23", "-crf 23"), ("CRF20", "-crf 20"), ("CRF17", "-crf 17"))
+        self.optionResolution = (("4K(3840x2160)", "-vf scale=3840:2160"), ("2K(2560x1440)", "-vf scale=2560:1440"), ("1080P(1920x1080)", "-vf scale=1920:1080"))
 
     def clickEncoding(self) :
         for fullname in self.curPaths:
@@ -23,13 +23,13 @@ class VideoUI() :
             if self.Checkbutton_SuffixVar.get() == 1:
                 suffix = "_{}_{}".format(self.optionResolution[self.Radiobutton_ResolutionVar.get()][0], self.optionCrf[self.Radiobutton_CrfVar.get()][0])
             options = " -c:v libx264"
-            options = options + self.optionResolution[self.Radiobutton_ResolutionVar.get()][1]
-            options = options + self.optionCrf[self.Radiobutton_CrfVar.get()][1]
+            options = options + " " + self.optionResolution[self.Radiobutton_ResolutionVar.get()][1]
+            options = options + " " + self.optionCrf[self.Radiobutton_CrfVar.get()][1]
             if self.Checkbutton_SlowVar.get() == 1:
                 options = options + " -preset veryslow"
             cmd = "ffmpeg -i {}{} {}{}.mp4".format(fullname, options, ext[0], suffix)
-            print(cmd)
-            # os.system(cmd)
+            # print(cmd)
+            os.system(cmd)
 
     def openFiles(self) :
         self.curPaths = filedialog.askopenfilenames()
