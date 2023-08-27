@@ -12,6 +12,8 @@ search_root = '../'
 class VideoUI() :
     def __init__(self, init_window) :
         self.init_window = init_window
+        self.optionCodec = (("h264", "-c:v libx264"), ("h265", "-c:v libx265"))
+        self.optionExt = (("mp4", "mp4"), ("mov", "mov"))
         self.optionCrf = (("CRF23", "-crf 23"), ("CRF20", "-crf 20"), ("CRF17", "-crf 17"))
         self.optionResolution = (("4K(3840x2160)", "-vf scale=3840:2160"), ("2K(2560x1440)", "-vf scale=2560:1440"), ("1080P(1920x1080)", "-vf scale=1920:1080"))
 
@@ -22,12 +24,14 @@ class VideoUI() :
             suffix = ""
             if self.Checkbutton_SuffixVar.get() == 1:
                 suffix = "_{}_{}".format(self.optionResolution[self.Radiobutton_ResolutionVar.get()][0], self.optionCrf[self.Radiobutton_CrfVar.get()][0])
-            options = " -c:v libx264"
+            options = ""
+            options = options + " " + self.optionCodec[self.Radiobutton_CodecVar.get()][1]
             options = options + " " + self.optionResolution[self.Radiobutton_ResolutionVar.get()][1]
             options = options + " " + self.optionCrf[self.Radiobutton_CrfVar.get()][1]
             if self.Checkbutton_SlowVar.get() == 1:
                 options = options + " -preset veryslow"
-            cmd = "ffmpeg -i {}{} {}{}.mp4".format(fullname, options, ext[0], suffix)
+            extname = self.optionExt[self.Radiobutton_ExtVar.get()][1]
+            cmd = "ffmpeg -i {}{} {}{}.{}".format(fullname, options, ext[0], suffix, extname)
             # print(cmd)
             os.system(cmd)
 
@@ -35,6 +39,12 @@ class VideoUI() :
         self.curPaths = filedialog.askopenfilenames()
         self.Entry_OpenPath.delete(0, tk.END)
         self.Entry_OpenPath.insert(0, self.curPaths)
+
+    def selectCodec(self) :
+        print("selectCodec ", self.optionCodec[self.Radiobutton_CodecVar.get()])
+    
+    def selectExt(self) :
+        print("selectExt ", self.optionExt[self.Radiobutton_ExtVar.get()])
 
     def selectSuffix(self) :
         print("selectSuffix ", self.Checkbutton_SuffixVar.get())
@@ -68,6 +78,22 @@ class VideoUI() :
         
         self.Entry_OpenPath = tk.Entry(self.FM1)
         self.Entry_OpenPath.grid(row = currow, column = 1, columnspan = 4, sticky = 'nesw')
+
+        currow = currow + 1
+
+        self.Radiobutton_CodecVar = tk.IntVar()
+        for idx in range(len(self.optionCodec)):
+            itm = self.optionCodec[idx]
+            radio = tk.Radiobutton(self.FM1, text = itm[0], variable = self.Radiobutton_CodecVar, value = idx, command = self.selectCodec)
+            radio.grid(row = currow, column = idx, sticky = 'nw')
+
+        currow = currow + 1
+
+        self.Radiobutton_ExtVar = tk.IntVar()
+        for idx in range(len(self.optionExt)):
+            itm = self.optionExt[idx]
+            radio = tk.Radiobutton(self.FM1, text = itm[0], variable = self.Radiobutton_ExtVar, value = idx, command = self.selectExt)
+            radio.grid(row = currow, column = idx, sticky = 'nw')
 
         currow = currow + 1
 
