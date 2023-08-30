@@ -28,7 +28,11 @@ class VideoUI() :
                     suffix = "_{}".format(suffixVar)
             options = ""
             options = options + " " + self.optionCodec[self.Radiobutton_CodecVar.get()][1]
+            # Video Filters
             options = options + " " + self.optionResolution[self.Radiobutton_ResolutionVar.get()][1]
+            if self.Checkbutton_HdrToSdrVar.get() == 1:
+                options = options + ",zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
+
             options = options + " " + self.optionCrf[self.Radiobutton_CrfVar.get()][1]
             if self.Checkbutton_SlowVar.get() == 1:
                 options = options + " -preset veryslow"
@@ -53,6 +57,9 @@ class VideoUI() :
 
     def selectSlow(self) :
         print("selectSlow ", self.Checkbutton_SlowVar.get())
+
+    def selectHdrToSdr(self) :
+        print("selectHdrToSdr ", self.Checkbutton_HdrToSdrVar.get())
 
     def selectResolution(self) :
         print("selectResolution ", self.optionResolution[self.Radiobutton_ResolutionVar.get()])
@@ -100,6 +107,7 @@ class VideoUI() :
         currow = currow + 1
 
         self.Radiobutton_ResolutionVar = tk.IntVar()
+        self.Radiobutton_ResolutionVar.set(2)
         for idx in range(len(self.optionResolution)):
             itm = self.optionResolution[idx]
             radio = tk.Radiobutton(self.FM1, text = itm[0], variable = self.Radiobutton_ResolutionVar, value = idx, command = self.selectResolution)
@@ -116,15 +124,23 @@ class VideoUI() :
         currow = currow + 1
 
         self.Checkbutton_SlowVar = tk.IntVar()
+        self.Checkbutton_SlowVar.set(1)
         checkBtn = tk.Checkbutton(self.FM1, text = "慢编码（高质量）", variable = self.Checkbutton_SlowVar, command = self.selectSlow)
         checkBtn.grid(row = currow, column = 0, sticky = 'nw')
 
+        self.Checkbutton_HdrToSdrVar = tk.IntVar()
+        self.Checkbutton_HdrToSdrVar.set(1)
+        checkBtn = tk.Checkbutton(self.FM1, text = "HDR转SDR", variable = self.Checkbutton_HdrToSdrVar, command = self.selectHdrToSdr)
+        checkBtn.grid(row = currow, column = 1, sticky = 'nw')
+
+        currow = currow + 1
+
         self.Checkbutton_SuffixVar = tk.IntVar()
         checkBtn = tk.Checkbutton(self.FM1, text = "加后缀", variable = self.Checkbutton_SuffixVar, command = self.selectSuffix)
-        checkBtn.grid(row = currow, column = 1, sticky = 'nw')
+        checkBtn.grid(row = currow, column = 0, sticky = 'nw')
         self.Entry_SuffixVar = tk.StringVar()
         entrySuffix = tk.Entry(self.FM1, textvariable = self.Entry_SuffixVar)
-        entrySuffix.grid(row = currow, column = 2, columnspan = 1, sticky = 'nesw')
+        entrySuffix.grid(row = currow, column = 1, columnspan = 1, sticky = 'nesw')
 
         currow = currow + 1
         
