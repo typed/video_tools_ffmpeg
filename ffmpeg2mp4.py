@@ -23,7 +23,9 @@ class VideoUI() :
             ext = os.path.splitext(fullname)
             suffix = ""
             if self.Checkbutton_SuffixVar.get() == 1:
-                suffix = "_{}_{}".format(self.optionResolution[self.Radiobutton_ResolutionVar.get()][0], self.optionCrf[self.Radiobutton_CrfVar.get()][0])
+                suffixVar = self.Entry_SuffixVar.get()
+                if len(suffixVar) > 0:
+                    suffix = "_{}".format(suffixVar)
             options = ""
             options = options + " " + self.optionCodec[self.Radiobutton_CodecVar.get()][1]
             options = options + " " + self.optionResolution[self.Radiobutton_ResolutionVar.get()][1]
@@ -113,13 +115,16 @@ class VideoUI() :
 
         currow = currow + 1
 
-        self.Checkbutton_SuffixVar = tk.IntVar()
-        checkBtn = tk.Checkbutton(self.FM1, text = "加后缀", variable = self.Checkbutton_SuffixVar, command = self.selectSuffix)
-        checkBtn.grid(row = currow, column = 0, sticky = 'nw')
-
         self.Checkbutton_SlowVar = tk.IntVar()
         checkBtn = tk.Checkbutton(self.FM1, text = "慢编码（高质量）", variable = self.Checkbutton_SlowVar, command = self.selectSlow)
+        checkBtn.grid(row = currow, column = 0, sticky = 'nw')
+
+        self.Checkbutton_SuffixVar = tk.IntVar()
+        checkBtn = tk.Checkbutton(self.FM1, text = "加后缀", variable = self.Checkbutton_SuffixVar, command = self.selectSuffix)
         checkBtn.grid(row = currow, column = 1, sticky = 'nw')
+        self.Entry_SuffixVar = tk.StringVar()
+        entrySuffix = tk.Entry(self.FM1, textvariable = self.Entry_SuffixVar)
+        entrySuffix.grid(row = currow, column = 2, columnspan = 1, sticky = 'nesw')
 
         currow = currow + 1
         
