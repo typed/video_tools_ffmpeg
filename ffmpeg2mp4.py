@@ -15,7 +15,7 @@ class VideoUI() :
         self.optionCodec = (("h264", "-c:v libx264"), ("h265", "-c:v libx265"))
         self.optionExt = (("mp4", "mp4"), ("mov", "mov"))
         self.optionCrf = (("CRF23", "-crf 23"), ("CRF20", "-crf 20"), ("CRF17", "-crf 17"))
-        self.optionResolution = (("4K(3840x2160)", "-vf scale=3840:2160"), ("2K(2560x1440)", "-vf scale=2560:1440"), ("1080P(1920x1080)", "-vf scale=1920:1080"))
+        self.optionResolution = (("4K(3840x2160)", "-vf scale=3840:2160"), ("2K(2560x1440)", "-vf scale=2560:1440"), ("1080P(1920x1080)", "-vf scale=1920:1080"), ("720P(1280x720)", "-vf scale=1280:720"))
 
     def clickEncoding(self) :
         for fullname in self.curPaths:
