@@ -37,8 +37,8 @@ class VideoUI() :
             if self.Checkbutton_SlowVar.get() == 1:
                 options = options + " -preset veryslow"
             extname = self.optionExt[self.Radiobutton_ExtVar.get()][1]
-            cmd = "ffmpeg -i {}{} {}{}.{}".format(fullname, options, ext[0], suffix, extname)
-            # print(cmd)
+            cmd = "ffmpeg -i \"{}\"{} \"{}{}.{}\"".format(fullname, options, ext[0], suffix, extname)
+            print(cmd)
             os.system(cmd)
 
     def openFiles(self) :
